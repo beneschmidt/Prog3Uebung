@@ -3,7 +3,6 @@ package ueb5;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.beans.Transient;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.swing.JLabel;
@@ -22,6 +21,7 @@ public class ContentPanel extends JPanel implements FileAdmin, FileSaver {
 		text = new BigTextArea();
 
 		label = new JLabel();
+		label.setPreferredSize(new Dimension((int)dimension.getWidth(), 20));
 		text = new BigTextArea();
 		BorderLayout layout = new BorderLayout();
 		layout.setVgap(10);
@@ -84,10 +84,8 @@ public class ContentPanel extends JPanel implements FileAdmin, FileSaver {
 		this.fileName = fileName;
 		try {
 			FileHandler.saveFileContent(text.getText(), fileName);
-		} catch (FileNotFoundException e) {
-			setError("Die Datei " + text.getText() + " konnte nicht gefunden werden!");
-		} catch (IOException e) {
-			setError("Die Datei " + text.getText() + " konnte nicht gelesen werden!");
+		}  catch (IOException e) {
+			setError(PropertyHandler.getInstance().getText("fileNotProcessed")+" "+text.getText());
 		}
 	}
 

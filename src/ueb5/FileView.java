@@ -1,43 +1,50 @@
 package ueb5;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JToolBar;
 
 public class FileView extends JFrame {
 
-	private static final String SAVE_AS = "Save As";
-	private static final String SAVE = "Save";
-	private static final String OPEN = "Open";
-	private static final String NEW = "New";
-	private static final String INFO = "Info";
-	private static final String EXIT = "Exit";
+	private static final String SAVE_AS = "saveAs";
+	private static final String SAVE = "save";
+	private static final String OPEN = "open";
+	private static final String NEW = "new";
+	private static final String INFO = "info";
+	private static final String EXIT = "exit";
 	private static final Dimension FRAME_DIMENSION = new Dimension(800, 600);
-	private static final Dimension PANEL_DIMENSION = new Dimension((int) FRAME_DIMENSION.getWidth() - 20, (int) FRAME_DIMENSION.getHeight() - 80);
+	private static final Dimension PANEL_DIMENSION = new Dimension((int) FRAME_DIMENSION.getWidth() - 20, (int) FRAME_DIMENSION.getHeight() - 90);
 
 	private JMenuBar menuBar;
+	private JToolBar toolBar;
 	private JMenu fileMenu;
 	private JMenu fontMenu;
 	private JMenu sizeMenu;
 	private JMenu helpMenu;
 	private FileLoaderFrame fileLoaderFrame;
 	private FileSaverFrame fileSaverFrame;
+	private InfoFrame infoFrame;
 	private ContentPanel contentPanel;
+	private PropertyHandler propertyHandler;
 	private List<Integer> fontSizes = new LinkedList<>();
 	private List<String> fontTypes = new LinkedList<>();
 	private List<FileMenuEntry> fileMenuEntries = new LinkedList<>();
 	private List<String> helpMenuEntries = new LinkedList<>();
 
-	public FileView() {
+	public FileView(Locale locale) {
 
 		this.setSize(FRAME_DIMENSION);
+		propertyHandler = PropertyHandler.getInstance();
+		propertyHandler.loadTexts(locale);
 
 		initFontSizes();
 		initFontTypes();
@@ -45,31 +52,48 @@ public class FileView extends JFrame {
 		initHelpMenuEntries();
 		createAndFillMenuBar();
 		this.setJMenuBar(menuBar);
-		this.setLayout(new FlowLayout());
+		this.setLayout(new BorderLayout());
+
+		createAndFillToolBar();
 
 		contentPanel = new ContentPanel(PANEL_DIMENSION);
 		contentPanel.setTextSize(fontSizes.get(0));
 		contentPanel.setTextFontName(fontTypes.get(0));
+		this.add(contentPanel, BorderLayout.SOUTH);
+
 		fileLoaderFrame = new FileLoaderFrame(contentPanel);
 		fileLoaderFrame.dispose();
 		fileSaverFrame = new FileSaverFrame(contentPanel);
 		fileSaverFrame.dispose();
-		this.add(contentPanel);
+		infoFrame = new InfoFrame();
+		infoFrame.dispose();
 
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 
+	private void createAndFillToolBar() {
+		toolBar = new JToolBar(JToolBar.HORIZONTAL);
+		this.add(toolBar, BorderLayout.NORTH);
+
+		JItemHelper buttonHelper = new JItemHelper(new ToolBarItemListener());
+		toolBar.add(buttonHelper.createNewToolBarButton("res/new.jpg", NEW));
+		toolBar.add(buttonHelper.createNewToolBarButton("res/open.jpg", OPEN));
+		toolBar.add(buttonHelper.createNewToolBarButton("res/save.jpg", SAVE));
+		toolBar.add(buttonHelper.createNewToolBarButton("res/saveAs.jpg", SAVE_AS));
+		toolBar.add(buttonHelper.createNewToolBarButton("res/exit.jpg", EXIT));
+	}
+
 	private void initHelpMenuEntries() {
-		helpMenuEntries.add(INFO);
+		helpMenuEntries.add(propertyHandler.getText(INFO));
 
 	}
 
 	private void initFileMenuEntries() {
-		fileMenuEntries.add(new FileMenuEntry(NEW, "res/new.jpg"));
-		fileMenuEntries.add(new FileMenuEntry(OPEN, "res/open.jpg"));
-		fileMenuEntries.add(new FileMenuEntry(SAVE, "res/save.jpg"));
-		fileMenuEntries.add(new FileMenuEntry(SAVE_AS, "res/saveAs.jpg"));
-		fileMenuEntries.add(new FileMenuEntry(EXIT, "res/exit.jpg"));
+		fileMenuEntries.add(new FileMenuEntry(propertyHandler.getText(NEW), "res/new.jpg"));
+		fileMenuEntries.add(new FileMenuEntry(propertyHandler.getText(OPEN), "res/open.jpg"));
+		fileMenuEntries.add(new FileMenuEntry(propertyHandler.getText(SAVE), "res/save.jpg"));
+		fileMenuEntries.add(new FileMenuEntry(propertyHandler.getText(SAVE_AS), "res/saveAs.jpg"));
+		fileMenuEntries.add(new FileMenuEntry(propertyHandler.getText(EXIT), "res/exit.jpg"));
 	}
 
 	private void initFontTypes() {
@@ -78,24 +102,24 @@ public class FileView extends JFrame {
 	}
 
 	private void createAndFillMenuBar() {
-		JMenuItemHelper itemHelper = new JMenuItemHelper(new MenuItemListener());
+		JItemHelper itemHelper = new JItemHelper(new MenuItemListener());
 
 		menuBar = new JMenuBar();
-		fileMenu = new JMenu("File");
+		fileMenu = new JMenu(propertyHandler.getText("file"));
 		for (FileMenuEntry fileMenuEntry : fileMenuEntries)
-			fileMenu.add(itemHelper.createNewItemWithIcon(fileMenuEntry.getText(), fileMenuEntry.getIconPath()));
+			fileMenu.add(itemHelper.createNewMenuItemWithIcon(fileMenuEntry.getText(), fileMenuEntry.getIconPath()));
 
-		fontMenu = new JMenu("Font");
+		fontMenu = new JMenu(propertyHandler.getText("font"));
 		for (String fontType : fontTypes)
-			fontMenu.add(itemHelper.createNewItem(fontType));
+			fontMenu.add(itemHelper.createNewMenuItem(fontType));
 
-		sizeMenu = new JMenu("Size");
+		sizeMenu = new JMenu(propertyHandler.getText("size"));
 		for (Integer fontSize : fontSizes)
-			sizeMenu.add(itemHelper.createNewItem(fontSize.toString()));
+			sizeMenu.add(itemHelper.createNewMenuItem(fontSize.toString()));
 
 		helpMenu = new JMenu("?");
 		for (String helpEntry : helpMenuEntries)
-			helpMenu.add(itemHelper.createNewItem(helpEntry));
+			helpMenu.add(itemHelper.createNewMenuItem(helpEntry));
 
 		menuBar.add(fileMenu);
 		menuBar.add(fontMenu);
@@ -119,14 +143,19 @@ public class FileView extends JFrame {
 	}
 
 	private void saveAction() {
-		if(contentPanel.canQuickSave()){
+		if (contentPanel.canQuickSave()) {
 			contentPanel.save();
 		} else {
 			saveAsAction();
 		}
 	}
-	
-	private void saveAsAction(){
+
+	private void exitAction() {
+		System.out.println("Programm wird beendet! ...");
+		System.exit(0);
+	}
+
+	private void saveAsAction() {
 		fileSaverFrame.setVisible(true);
 		fileSaverFrame.pack();
 	}
@@ -136,23 +165,23 @@ public class FileView extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
-			if (e.getActionCommand().equals(EXIT)) {
-				System.out.println("Programm wird beendet! ...");
-				System.exit(0);
-			} else if (e.getActionCommand().equals(NEW)) {
+			if (e.getActionCommand().equals(propertyHandler.getText(EXIT))) {
+				exitAction();
+			} else if (e.getActionCommand().equals(propertyHandler.getText(NEW))) {
 				newAction();
-			} else if (e.getActionCommand().equals(OPEN)) {
+			} else if (e.getActionCommand().equals(propertyHandler.getText(OPEN))) {
 				openAction();
-			} else if (e.getActionCommand().equals(SAVE)) {
+			} else if (e.getActionCommand().equals(propertyHandler.getText(SAVE))) {
 				saveAction();
-			}  else if (e.getActionCommand().equals(SAVE_AS)) {
+			} else if (e.getActionCommand().equals(propertyHandler.getText(SAVE_AS))) {
 				saveAsAction();
-			}else if (isFontSize(e.getActionCommand())) {
+			} else if (isFontSize(e.getActionCommand())) {
 				contentPanel.setTextSize(Integer.parseInt(e.getActionCommand()));
 			} else if (isFontType(e.getActionCommand())) {
 				contentPanel.setTextFontName(e.getActionCommand());
-			} else if (e.getActionCommand().equals(INFO)) {
-				// TODO: PopUp InfoBox
+			} else if (e.getActionCommand().equals(propertyHandler.getText(INFO))) {
+				infoFrame.setVisible(true);
+				infoFrame.pack();
 			}
 		}
 
@@ -169,4 +198,23 @@ public class FileView extends JFrame {
 		}
 	}
 
+	private class ToolBarItemListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String action = e.getActionCommand();
+			if (action.equals(NEW)) {
+				newAction();
+			} else if (action.equals(OPEN)) {
+				openAction();
+			} else if (action.equals(SAVE)) {
+				saveAction();
+			} else if (action.equals(SAVE_AS)) {
+				saveAsAction();
+			} else if (action.equals(EXIT)) {
+				exitAction();
+			}
+
+		}
+	}
 }

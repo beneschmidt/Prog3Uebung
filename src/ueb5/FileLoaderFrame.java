@@ -57,9 +57,9 @@ public class FileLoaderFrame extends JFrame {
 					fileAdmin.setFileName(fileTextField.getText());
 					fileAdmin.setFileContent(FileHandler.loadFileContent(fileTextField.getText()));
 				} catch (FileNotFoundException e) {
-					fileAdmin.setError("Konnte die Datei \"" + fileTextField.getText() + "\" nicht lesen!");
+					fileAdmin.setError(PropertyHandler.getInstance().getText("fileNotFound")+" "+fileTextField.getText());
 				} catch (IOException e) {
-					fileAdmin.setError("Konnte die Datei \"" + fileTextField.getText() + "\" nicht verarbeiten!");
+					fileAdmin.setError(PropertyHandler.getInstance().getText("fileNotProcessed")+" "+fileTextField.getText());
 				}
 				dispose();
 			}
