@@ -3,6 +3,11 @@ package ueb6;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * Singleton-Handler zum Laden und auslesen des Sprachfiles. Dieses ist hier fest verankert und traegt den Titel "Texts".
+ * 
+ * @author Benne
+ */
 public class PropertyHandler {
 
 	private static final String TEXT_FILE = "Texts";
@@ -21,15 +26,13 @@ public class PropertyHandler {
 
 	public void loadTexts(Locale locale) {
 		texts = ResourceBundle.getBundle(TEXT_FILE, locale);
-		System.out.println("Texts geladen: "+texts);
 	}
-	
-	public boolean textsAreLoaded(){
-		return texts!=null;
+
+	public boolean textsAreLoaded() {
+		return texts != null;
 	}
 
 	public String getText(String key) {
-		System.out.println("Texts: "+texts);
 		return texts.getString(key);
 	}
 }

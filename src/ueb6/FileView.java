@@ -6,14 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JToolBar;
 
-public class FileView extends JFrame {
+public class FileView extends JFrame  {
 
 	private static final String SAVE_AS = "saveAs";
 	private static final String SAVE = "save";
