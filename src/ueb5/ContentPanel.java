@@ -3,6 +3,8 @@ package ueb5;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.beans.Transient;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -26,8 +28,6 @@ public class ContentPanel extends JPanel implements FileAdmin, FileSaver {
 		this.setLayout(layout);
 		this.add(text, BorderLayout.CENTER);
 		this.add(label, BorderLayout.SOUTH);
-
-		refreshLabel();
 	}
 
 	@Override
@@ -48,13 +48,6 @@ public class ContentPanel extends JPanel implements FileAdmin, FileSaver {
 		this.text.setText("");
 		fileName = null;
 		fileContent = null;
-	}
-
-	/**
-	 * aktualisiert das angezeigte Label
-	 */
-	public void refreshLabel() {
-		label.setText(text.toString());
 	}
 
 	@Override
@@ -83,11 +76,23 @@ public class ContentPanel extends JPanel implements FileAdmin, FileSaver {
 	}
 
 	public void save() {
-		FileHandler.saveFileContent(text.getText(), fileName);
+		setFileNameAndSave(fileName);
 	}
 
 	@Override
-	public void saveFile(String fileName) {
-		FileHandler.saveFileContent(text.getText(), fileName);
+	public void setFileNameAndSave(String fileName) {
+		this.fileName = fileName;
+		try {
+			FileHandler.saveFileContent(text.getText(), fileName);
+		} catch (FileNotFoundException e) {
+			setError("Die Datei " + text.getText() + " konnte nicht gefunden werden!");
+		} catch (IOException e) {
+			setError("Die Datei " + text.getText() + " konnte nicht gelesen werden!");
+		}
+	}
+
+	@Override
+	public void setError(String errorMessage) {
+		label.setText(errorMessage);
 	}
 }

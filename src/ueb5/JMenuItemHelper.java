@@ -35,7 +35,7 @@ public class JMenuItemHelper {
 	 */
 	public JMenuItem createNewItemWithIcon(String text, String iconPath) {
 		if (iconPath != null) {
-			ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource(iconPath));
+			ImageIcon icon = new ImageIcon(iconPath);
 			JMenuItem newItem = new JMenuItem(text, icon);
 			newItem.addActionListener(actionListener);
 			return newItem;

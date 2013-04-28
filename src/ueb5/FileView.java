@@ -65,7 +65,7 @@ public class FileView extends JFrame {
 	}
 
 	private void initFileMenuEntries() {
-		fileMenuEntries.add(new FileMenuEntry(NEW, null));
+		fileMenuEntries.add(new FileMenuEntry(NEW, "res/new.jpg"));
 		fileMenuEntries.add(new FileMenuEntry(OPEN, "res/open.jpg"));
 		fileMenuEntries.add(new FileMenuEntry(SAVE, "res/save.jpg"));
 		fileMenuEntries.add(new FileMenuEntry(SAVE_AS, "res/saveAs.jpg"));
@@ -111,7 +111,6 @@ public class FileView extends JFrame {
 
 	private void newAction() {
 		contentPanel.clearTextAndFileName();
-		contentPanel.refreshLabel();
 	}
 
 	private void openAction() {
@@ -125,7 +124,6 @@ public class FileView extends JFrame {
 		} else {
 			saveAsAction();
 		}
-
 	}
 	
 	private void saveAsAction(){
@@ -151,10 +149,8 @@ public class FileView extends JFrame {
 				saveAsAction();
 			}else if (isFontSize(e.getActionCommand())) {
 				contentPanel.setTextSize(Integer.parseInt(e.getActionCommand()));
-				contentPanel.refreshLabel();
 			} else if (isFontType(e.getActionCommand())) {
 				contentPanel.setTextFontName(e.getActionCommand());
-				contentPanel.refreshLabel();
 			} else if (e.getActionCommand().equals(INFO)) {
 				// TODO: PopUp InfoBox
 			}

@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JTextField;
@@ -31,12 +33,12 @@ public class FileLoaderFrame extends JFrame {
 	public Dimension getPreferredSize() {
 		return DEFAULT_WINDOW_SIZE;
 	}
-	
+
 	@Override
 	public Dimension getMinimumSize() {
 		return DEFAULT_WINDOW_SIZE;
 	}
-	
+
 	/**
 	 * Spezieller Listener fuer das Eingabetextfeld
 	 * 
@@ -47,11 +49,18 @@ public class FileLoaderFrame extends JFrame {
 		private static final char ENTER = 10;
 
 		@Override
-		public void keyTyped(KeyEvent e) {
-			if (e.getKeyChar() == ENTER) {
+		public void keyTyped(KeyEvent event) {
+			if (event.getKeyChar() == ENTER) {
 				System.out.println("Eingabe durchgefuehrt, eingegebener Text: " + fileTextField.getText());
-				fileAdmin.setFileName(fileTextField.getText());
-				fileAdmin.setFileContent(FileHandler.loadFileContent(fileTextField.getText()));
+
+				try {
+					fileAdmin.setFileName(fileTextField.getText());
+					fileAdmin.setFileContent(FileHandler.loadFileContent(fileTextField.getText()));
+				} catch (FileNotFoundException e) {
+					fileAdmin.setError("Konnte die Datei \"" + fileTextField.getText() + "\" nicht lesen!");
+				} catch (IOException e) {
+					fileAdmin.setError("Konnte die Datei \"" + fileTextField.getText() + "\" nicht verarbeiten!");
+				}
 				dispose();
 			}
 		}

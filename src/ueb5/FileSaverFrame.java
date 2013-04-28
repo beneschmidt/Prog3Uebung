@@ -17,10 +17,10 @@ public class FileSaverFrame extends JFrame {
 
 	private static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(300, 80);
 	private JTextField fileTextField;
-	private FileAdmin fileAdmin;
+	private FileSaver fileSaver;
 
-	public FileSaverFrame(FileAdmin fileAdmin) {
-		this.fileAdmin = fileAdmin;
+	public FileSaverFrame(FileSaver fileSaver) {
+		this.fileSaver = fileSaver;
 		init();
 	}
 
@@ -55,7 +55,7 @@ public class FileSaverFrame extends JFrame {
 		public void keyTyped(KeyEvent e) {
 			if (e.getKeyChar() == ENTER) {
 				System.out.println("Eingabe durchgefuehrt, eingegebener Text: " + fileTextField.getText());
-				fileAdmin.setFileName(fileTextField.getText());
+				fileSaver.setFileNameAndSave(fileTextField.getText());
 				dispose();
 			}
 		}
