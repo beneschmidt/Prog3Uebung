@@ -22,7 +22,8 @@ public class FileView extends JFrame {
 	private static final String INFO = "info";
 	private static final String EXIT = "exit";
 	private static final Dimension FRAME_DIMENSION = new Dimension(800, 600);
-	private static final Dimension PANEL_DIMENSION = new Dimension((int) FRAME_DIMENSION.getWidth() - 20, (int) FRAME_DIMENSION.getHeight() - 90);
+	// private static final Dimension PANEL_DIMENSION = new Dimension((int)
+	// FRAME_DIMENSION.getWidth() - 20, (int) FRAME_DIMENSION.getHeight() - 90);
 
 	private JMenuBar menuBar;
 	private JToolBar toolBar;
@@ -33,18 +34,19 @@ public class FileView extends JFrame {
 	private FileLoaderFrame fileLoaderFrame;
 	private FileSaverFrame fileSaverFrame;
 	private InfoFrame infoFrame;
-	private ContentPanel contentPanel;
+	private FileRootPanel rootPanel;
+	private SplitContentPane splitPane;
+	// private ContentPanel contentPanel;
 	private PropertyHandler propertyHandler;
 	private List<Integer> fontSizes = new LinkedList<>();
 	private List<String> fontTypes = new LinkedList<>();
 	private List<FileMenuEntry> fileMenuEntries = new LinkedList<>();
 	private List<String> helpMenuEntries = new LinkedList<>();
 
-	public FileView(Locale locale) {
+	public FileView() {
 
 		this.setSize(FRAME_DIMENSION);
 		propertyHandler = PropertyHandler.getInstance();
-		propertyHandler.loadTexts(locale);
 
 		initFontSizes();
 		initFontTypes();
@@ -56,15 +58,20 @@ public class FileView extends JFrame {
 
 		createAndFillToolBar();
 
-		contentPanel = new ContentPanel(PANEL_DIMENSION);
-		contentPanel.setTextSize(fontSizes.get(0));
-		contentPanel.setTextFontName(fontTypes.get(0));
-		this.add(contentPanel, BorderLayout.SOUTH);
+		// contentPanel = new ContentPanel(PANEL_DIMENSION);
+		// contentPanel.setTextSize(fontSizes.get(0));
+		// contentPanel.setTextFontName(fontTypes.get(0));
+		// this.add(contentPanel, BorderLayout.SOUTH);
 
-		fileLoaderFrame = new FileLoaderFrame(contentPanel);
-		fileLoaderFrame.dispose();
-		fileSaverFrame = new FileSaverFrame(contentPanel);
-		fileSaverFrame.dispose();
+		rootPanel = new FileRootPanel();
+		splitPane = new SplitContentPane();
+		this.add(rootPanel, BorderLayout.NORTH);
+		this.add(splitPane, BorderLayout.SOUTH);
+
+		// fileLoaderFrame = new FileLoaderFrame(contentPanel);
+		// fileLoaderFrame.dispose();
+		// fileSaverFrame = new FileSaverFrame(contentPanel);
+		// fileSaverFrame.dispose();
 		infoFrame = new InfoFrame();
 		infoFrame.dispose();
 
@@ -134,7 +141,7 @@ public class FileView extends JFrame {
 	}
 
 	private void newAction() {
-		contentPanel.clearTextAndFileName();
+		// contentPanel.clearTextAndFileName();
 	}
 
 	private void openAction() {
@@ -143,11 +150,11 @@ public class FileView extends JFrame {
 	}
 
 	private void saveAction() {
-		if (contentPanel.canQuickSave()) {
-			contentPanel.save();
-		} else {
-			saveAsAction();
-		}
+		// if (contentPanel.canQuickSave()) {
+		// contentPanel.save();
+		// } else {
+		// saveAsAction();
+		// }
 	}
 
 	private void exitAction() {
@@ -176,9 +183,9 @@ public class FileView extends JFrame {
 			} else if (e.getActionCommand().equals(propertyHandler.getText(SAVE_AS))) {
 				saveAsAction();
 			} else if (isFontSize(e.getActionCommand())) {
-				contentPanel.setTextSize(Integer.parseInt(e.getActionCommand()));
+				// contentPanel.setTextSize(Integer.parseInt(e.getActionCommand()));
 			} else if (isFontType(e.getActionCommand())) {
-				contentPanel.setTextFontName(e.getActionCommand());
+				// contentPanel.setTextFontName(e.getActionCommand());
 			} else if (e.getActionCommand().equals(propertyHandler.getText(INFO))) {
 				infoFrame.setVisible(true);
 				infoFrame.pack();
