@@ -32,7 +32,7 @@ public class FileView extends JFrame {
 	private ContentPanel contentPanel;
 	private List<Integer> fontSizes = new LinkedList<>();
 	private List<String> fontTypes = new LinkedList<>();
-	private List<String> fileMenuEntries = new LinkedList<>();
+	private List<FileMenuEntry> fileMenuEntries = new LinkedList<>();
 	private List<String> helpMenuEntries = new LinkedList<>();
 
 	public FileView() {
@@ -65,11 +65,11 @@ public class FileView extends JFrame {
 	}
 
 	private void initFileMenuEntries() {
-		fileMenuEntries.add(NEW);
-		fileMenuEntries.add(OPEN);
-		fileMenuEntries.add(SAVE);
-		fileMenuEntries.add(SAVE_AS);
-		fileMenuEntries.add(EXIT);
+		fileMenuEntries.add(new FileMenuEntry(NEW, null));
+		fileMenuEntries.add(new FileMenuEntry(OPEN, "res/open.jpg"));
+		fileMenuEntries.add(new FileMenuEntry(SAVE, "res/save.jpg"));
+		fileMenuEntries.add(new FileMenuEntry(SAVE_AS, "res/saveAs.jpg"));
+		fileMenuEntries.add(new FileMenuEntry(EXIT, "res/exit.jpg"));
 	}
 
 	private void initFontTypes() {
@@ -82,8 +82,8 @@ public class FileView extends JFrame {
 
 		menuBar = new JMenuBar();
 		fileMenu = new JMenu("File");
-		for (String fileEntry : fileMenuEntries)
-			fileMenu.add(itemHelper.createNewItem(fileEntry));
+		for (FileMenuEntry fileMenuEntry : fileMenuEntries)
+			fileMenu.add(itemHelper.createNewItemWithIcon(fileMenuEntry.getText(), fileMenuEntry.getIconPath()));
 
 		fontMenu = new JMenu("Font");
 		for (String fontType : fontTypes)
