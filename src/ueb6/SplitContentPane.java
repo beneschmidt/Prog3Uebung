@@ -3,22 +3,29 @@ package ueb6;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.Transient;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class SplitContentPane extends JSplitPane {
+public class SplitContentPane extends JSplitPane implements RootFolder {
 
+	private static final String LOAD_COMMAND = "LOAD";
 	private static final Dimension PREFERRED_DIMENSION = new Dimension(800, 450);
 	private static final Dimension MINIMUM_DIMENSION = new Dimension(800, 100);
 	private JList<File> list;
@@ -27,8 +34,8 @@ public class SplitContentPane extends JSplitPane {
 	private JButton load;
 	private JTextArea contentArea;
 	private JPanel propertyTab;
-	private JLabel readable;
-	private JLabel directory;
+	private JLabel readable, directory;
+	private JScrollPane textScrollPane;
 
 	public SplitContentPane() {
 		initList();
@@ -48,15 +55,21 @@ public class SplitContentPane extends JSplitPane {
 		contentTab.setLayout(new BorderLayout());
 		// TODO: Sprachabhaengig machen
 		load = new JButton("load");
+		load.setActionCommand(LOAD_COMMAND);
+		load.addActionListener(new LoadActionListener());
+
 		contentArea = new JTextArea();
+		textScrollPane = new JScrollPane(contentArea);
 		contentTab.add(load, BorderLayout.NORTH);
-		contentTab.add(contentArea, BorderLayout.CENTER);
+		contentTab.add(textScrollPane, BorderLayout.CENTER);
+		// TODO: Sprachabhaengig machen
 		tabbedPane.add("Content", contentTab);
 	}
 
 	private void initPropertyTab() {
 		propertyTab = new JPanel();
 		propertyTab.setLayout(new GridLayout(4, 1));
+		// TODO: Sprachabhaengig machen
 		readable = new JLabel("Lesbar: ");
 		directory = new JLabel("Directory: ");
 		propertyTab.add(readable);
@@ -102,6 +115,38 @@ public class SplitContentPane extends JSplitPane {
 	}
 
 	/**
+	 * Faengt das Druecken eines Load-Buttons ab und handhabt entsprechend das
+	 * Laden eines gewaehlten Files.
+	 * 
+	 * @author schmidtb
+	 */
+	private class LoadActionListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			if (event.getActionCommand().equals(LOAD_COMMAND)) {
+				try {
+					if (isCurrentFileTextReadable()) {
+						File file = list.getSelectedValue();
+						String text = FileHandler.loadFileContent(file);
+						contentArea.setText(text);
+					}
+				} catch (FileNotFoundException e) {
+					// TODO: an höhere Schicht weitergeben
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO: an höhere Schicht weitergeben
+					e.printStackTrace();
+				}
+			}
+		}
+
+		private boolean isCurrentFileTextReadable() {
+			return list.getSelectedValue() != null && !list.getSelectedValue().isDirectory() && list.getSelectedValue().canRead();
+		}
+	}
+
+	/**
 	 * Handhabt die Auswahl eines Elements in der File-Liste.
 	 * 
 	 * @author schmidtb
@@ -110,10 +155,19 @@ public class SplitContentPane extends JSplitPane {
 
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
-			File selectedFile = list.getModel().getElementAt(e.getLastIndex());
-			readable.setText("Lesbar: " + (selectedFile.canRead() ? "Ja" : "Nein"));
-			directory.setText("Directory: " + (selectedFile.isDirectory() ? "Ja" : "Nein"));
+			File selectedFile = list.getSelectedValue();
+
+			if (selectedFile != null) {
+				// TODO: sprachabhaengig machen
+				readable.setText("Lesbar: " + (selectedFile.canRead() ? "Ja" : "Nein"));
+				directory.setText("Directory: " + (selectedFile.isDirectory() ? "Ja" : "Nein"));
+			}
 		}
 	}
 
+	@Override
+	public void setRootFolder(String rootFolder) {
+		File file = new File(rootFolder);
+		loadFilesInFolder(file);
+	}
 }

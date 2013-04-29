@@ -12,11 +12,14 @@ import ueb3.CloseHelper;
 public class FileHandler {
 
 	public static String loadFileContent(String filename) throws IOException {
+		final File file = new File(filename);
+		return loadFileContent(file);
+	}
+
+	public static String loadFileContent(File file) throws IOException {
 		BufferedReader reader = null;
 		StringBuilder text = new StringBuilder();
 		try {
-			// Datei angeben
-			final File file = new File(filename);
 
 			// BufferedReader anlegen
 			reader = new BufferedReader(new FileReader(file));
@@ -27,7 +30,7 @@ public class FileHandler {
 				text.append(line).append("\n");
 			}
 
-			System.out.println("Datei " + filename + " wurde fertig durchlaufen.");
+			System.out.println("Datei " + file.getName() + " wurde fertig durchlaufen.");
 		} finally {
 			CloseHelper.close(reader);
 		}

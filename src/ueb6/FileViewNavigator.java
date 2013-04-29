@@ -62,8 +62,8 @@ public class FileViewNavigator extends JFrame  {
 		// contentPanel.setTextFontName(fontTypes.get(0));
 		// this.add(contentPanel, BorderLayout.SOUTH);
 
-		rootPanel = new FileRootPanel();
 		splitPane = new SplitContentPane();
+		rootPanel = new FileRootPanel(splitPane);
 		this.add(rootPanel, BorderLayout.CENTER);
 		this.add(splitPane, BorderLayout.SOUTH);
 

@@ -21,11 +21,13 @@ public class FileRootPanel extends JPanel {
 	private static final Dimension DIMENSION = new Dimension(800, 50);
 	private JLabel label;
 	private JTextField textField;
+	private RootFolder rootFolder;
 
-	public FileRootPanel() {
+	public FileRootPanel(RootFolder rootFolder) {
+		this.rootFolder = rootFolder;
 		PropertyHandler instance = PropertyHandler.getInstance();
 		label = new JLabel(instance.getText("fileRoot") + ":");
-		label.setHorizontalAlignment( SwingConstants.CENTER );
+		label.setHorizontalAlignment(SwingConstants.CENTER);
 		textField = new JTextField(40);
 		textField.addKeyListener(new TextKeyListener());
 
@@ -33,19 +35,19 @@ public class FileRootPanel extends JPanel {
 		this.add(label);
 		this.add(textField);
 	}
-	
+
 	@Override
 	@Transient
 	public Dimension getPreferredSize() {
 		return DIMENSION;
 	}
-	
+
 	@Override
 	@Transient
 	public Dimension getMinimumSize() {
 		return new Dimension(100, 50);
 	}
-	
+
 	/**
 	 * Faengt die Eingabe von Texten im Textfeld ab
 	 * 
@@ -59,6 +61,7 @@ public class FileRootPanel extends JPanel {
 		public void keyTyped(KeyEvent event) {
 			if (event.getKeyChar() == ENTER) {
 				System.out.println("Eingabe durchgefuehrt, eingegebener Text: " + textField.getText());
+				rootFolder.setRootFolder(textField.getText());
 			}
 		}
 
