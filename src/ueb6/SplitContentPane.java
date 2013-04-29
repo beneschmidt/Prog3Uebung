@@ -15,7 +15,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -36,8 +35,13 @@ public class SplitContentPane extends JSplitPane implements RootFolder {
 	private JPanel propertyTab;
 	private JLabel readable, directory;
 	private JScrollPane textScrollPane;
+	private PropertyHandler props;
+	private static String YES, NO;
 
 	public SplitContentPane() {
+		props = PropertyHandler.getInstance();
+		YES = props.getText("yes");
+		NO = props.getText("no");
 		initList();
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setPreferredSize(new Dimension(300, 450));
@@ -53,8 +57,7 @@ public class SplitContentPane extends JSplitPane implements RootFolder {
 	private void initContentTab() {
 		contentTab = new JPanel();
 		contentTab.setLayout(new BorderLayout());
-		// TODO: Sprachabhaengig machen
-		load = new JButton("load");
+		load = new JButton(props.getText("load"));
 		load.setActionCommand(LOAD_COMMAND);
 		load.addActionListener(new LoadActionListener());
 
@@ -62,19 +65,17 @@ public class SplitContentPane extends JSplitPane implements RootFolder {
 		textScrollPane = new JScrollPane(contentArea);
 		contentTab.add(load, BorderLayout.NORTH);
 		contentTab.add(textScrollPane, BorderLayout.CENTER);
-		// TODO: Sprachabhaengig machen
-		tabbedPane.add("Content", contentTab);
+		tabbedPane.add(props.getText("content"), contentTab);
 	}
 
 	private void initPropertyTab() {
 		propertyTab = new JPanel();
 		propertyTab.setLayout(new GridLayout(4, 1));
-		// TODO: Sprachabhaengig machen
-		readable = new JLabel("Lesbar: ");
-		directory = new JLabel("Directory: ");
+		readable = new JLabel(props.getText("readable") + ": ");
+		directory = new JLabel(props.getText("directory") + ": ");
 		propertyTab.add(readable);
 		propertyTab.add(directory);
-		tabbedPane.addTab("Property", propertyTab);
+		tabbedPane.addTab(props.getText("properties"), propertyTab);
 	}
 
 	@Override
@@ -158,9 +159,8 @@ public class SplitContentPane extends JSplitPane implements RootFolder {
 			File selectedFile = list.getSelectedValue();
 
 			if (selectedFile != null) {
-				// TODO: sprachabhaengig machen
-				readable.setText("Lesbar: " + (selectedFile.canRead() ? "Ja" : "Nein"));
-				directory.setText("Directory: " + (selectedFile.isDirectory() ? "Ja" : "Nein"));
+				readable.setText(props.getText("readable") + ": " + (selectedFile.canRead() ? YES : NO));
+				directory.setText(props.getText("directory")+": " + (selectedFile.isDirectory() ? YES : NO));
 			}
 		}
 	}
