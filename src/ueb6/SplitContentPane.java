@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class SplitContentPane extends JSplitPane {
 
@@ -37,7 +39,7 @@ public class SplitContentPane extends JSplitPane {
 		initContentTab();
 
 		setLayout(new BorderLayout());
-		this.add(list, BorderLayout.CENTER, 0);
+		this.add(list, BorderLayout.WEST);
 		this.add(tabbedPane, BorderLayout.CENTER, -1);
 	}
 
@@ -82,6 +84,7 @@ public class SplitContentPane extends JSplitPane {
 		list = new JList<>();
 		File rootFile = new File(System.getProperty("user.dir"));
 		loadFilesInFolder(rootFile);
+		list.addListSelectionListener(new FileListSelectionListener());
 	}
 
 	/**
@@ -96,6 +99,21 @@ public class SplitContentPane extends JSplitPane {
 			model.addElement(nextFile);
 		}
 		list.setModel(model);
+	}
+
+	/**
+	 * Handhabt die Auswahl eines Elements in der File-Liste.
+	 * 
+	 * @author schmidtb
+	 */
+	private class FileListSelectionListener implements ListSelectionListener {
+
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			File selectedFile = list.getModel().getElementAt(e.getLastIndex());
+			readable.setText("Lesbar: " + (selectedFile.canRead() ? "Ja" : "Nein"));
+			directory.setText("Directory: " + (selectedFile.isDirectory() ? "Ja" : "Nein"));
+		}
 	}
 
 }
