@@ -1,8 +1,10 @@
 package ueb6;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.Transient;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,6 +18,7 @@ import javax.swing.SwingConstants;
  * @author Benne
  */
 public class FileRootPanel extends JPanel {
+	private static final Dimension DIMENSION = new Dimension(800, 50);
 	private JLabel label;
 	private JTextField textField;
 
@@ -30,7 +33,19 @@ public class FileRootPanel extends JPanel {
 		this.add(label);
 		this.add(textField);
 	}
-
+	
+	@Override
+	@Transient
+	public Dimension getPreferredSize() {
+		return DIMENSION;
+	}
+	
+	@Override
+	@Transient
+	public Dimension getMinimumSize() {
+		return new Dimension(100, 50);
+	}
+	
 	/**
 	 * Faengt die Eingabe von Texten im Textfeld ab
 	 * 

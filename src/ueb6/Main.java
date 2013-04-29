@@ -6,7 +6,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		PropertyHandler.getInstance().loadTexts(Locale.GERMANY);
-		FileView view = new FileView();
+		FileViewNavigator view = new FileViewNavigator();
 		view.setVisible(true);
 	}
 }

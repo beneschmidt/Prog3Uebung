@@ -12,7 +12,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JToolBar;
 
-public class FileView extends JFrame  {
+public class FileViewNavigator extends JFrame  {
 
 	private static final String SAVE_AS = "saveAs";
 	private static final String SAVE = "save";
@@ -42,7 +42,7 @@ public class FileView extends JFrame  {
 	private List<FileMenuEntry> fileMenuEntries = new LinkedList<>();
 	private List<String> helpMenuEntries = new LinkedList<>();
 
-	public FileView() {
+	public FileViewNavigator() {
 
 		this.setSize(FRAME_DIMENSION);
 		propertyHandler = PropertyHandler.getInstance();
@@ -64,7 +64,7 @@ public class FileView extends JFrame  {
 
 		rootPanel = new FileRootPanel();
 		splitPane = new SplitContentPane();
-		this.add(rootPanel, BorderLayout.NORTH);
+		this.add(rootPanel, BorderLayout.CENTER);
 		this.add(splitPane, BorderLayout.SOUTH);
 
 		// fileLoaderFrame = new FileLoaderFrame(contentPanel);
@@ -91,7 +91,6 @@ public class FileView extends JFrame  {
 
 	private void initHelpMenuEntries() {
 		helpMenuEntries.add(propertyHandler.getText(INFO));
-
 	}
 
 	private void initFileMenuEntries() {
